@@ -2,7 +2,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Generator {
-    Alphabet alphabet;
+    public Alphabet alphabet;
     public static Scanner keyboard;
 
     public Generator(Scanner scanner) {
@@ -46,7 +46,7 @@ public class Generator {
         }
     }
 
-    private Password GeneratePassword(int length) {
+    protected Password GeneratePassword(int length) {
         final StringBuilder pass = new StringBuilder("");
 
         final int alphabetLength = alphabet.getAlphabet().length();
@@ -143,22 +143,22 @@ public class Generator {
         System.err.println("Your generated password -> " + password);
     }
 
-    private boolean isInclude(String Input) {
+    protected boolean isInclude(String Input) {
         if (Input.equalsIgnoreCase("yes")) {
             return true;
-        } 
+        }
         else {
             return false;
         }
     }
 
-    private void PasswordRequestError(String i) {
+    protected void PasswordRequestError(String i) {
         if (!i.equalsIgnoreCase("yes") && !i.equalsIgnoreCase("no")) {
             System.out.println("You have entered something incorrect let's go over it again \n");
         }
     }
 
-    private void checkPassword() {
+    protected void checkPassword() {
         String input;
 
         System.out.print("\nEnter your password:");
@@ -169,7 +169,7 @@ public class Generator {
         System.out.println(p.calculateScore());
     }
 
-    private void printMenu() {
+    protected void printMenu() {
         System.out.println();
         System.out.println("Enter 1 - Password Generator");
         System.out.println("Enter 2 - Password Strength Check");
@@ -178,7 +178,7 @@ public class Generator {
         System.out.print("Choice:");
     }
 
-    private void printQuitMessage() {
+    protected void printQuitMessage() {
         System.out.println("Closing the program bye bye!");
     }
 }
