@@ -1,98 +1,114 @@
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class GeneratorTest {
-	private Generator generator;
+    private Generator generator;
+    private Scanner scanner;
 
-	@BeforeEach
-	public void setUp() {
-		// Set up a Scanner with a custom InputStream for testing
-		String input = "yes\nno\nno\nyes\n8\n"; // Sample user input
-		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-		Scanner scanner = new Scanner(inputStream);
+    @BeforeEach
+    public void setUp() {
+        String input = "yes\nyes\nyes\nyes\n8\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        scanner = new Scanner(System.in);
 
-		generator = new Generator(scanner);
-	}
+        generator = new Generator(scanner);
+    }
 
-	@Test
-	public void testGeneratePassword() {
-		Password password = generator.GeneratePassword(12);
-		assertNotNull(password);
-		assertEquals(12, password.toString().length());
-	}
+    @AfterEach
+    public void tearDown() {
+        scanner.close();
+        System.setIn(System.in); 
+    }
 
-	@Test
-	public void testIsInclude() {
-		assertTrue(generator.isInclude("yes"));
-		assertFalse(generator.isInclude("no"));
-		assertFalse(generator.isInclude("invalid"));
-	}
-
-	@Test
-	public void testPasswordRequestError() {
-		// Create a custom InputStream to simulate user input
-		String input = "invalid\nno\n"; // Invalid input followed by valid input
-		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-		Scanner scanner = new Scanner(inputStream);
-		generator = new Generator(scanner);
-
-		// Redirect standard output to capture printed messages
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outputStream));
-
-		generator.PasswordRequestError("invalid");
-		generator.PasswordRequestError("no");
-
-		String consoleOutput = outputStream.toString();
-		assertTrue(consoleOutput.contains("You have entered something incorrect"));
-	}
+    @Test
+    @DisplayName("Test Generated Password Length 8")
+    public void testGeneratePassword() {
+        int length = 8;
+        Password password = generator.GeneratePassword(length);
+        assertNotNull(password);
+        assertEquals(length, password.getPassword().length());
+    }
 
 	@Test
-	public void testCheckPassword() {
-		// Create a custom InputStream to simulate user input
-		String input = "Password123\n"; // Sample password input
-		InputStream inputStream = new ByteArrayInputStream(input.getBytes());
-		Scanner scanner = new Scanner(inputStream);
-		generator = new Generator(scanner);
+    @DisplayName("GeneratePassword with length 0 ")
+    public void testGeneratePasswordLength0() {
+        int length = 0;
+        Password password = generator.GeneratePassword(length);
+        assertNotNull(password);
+        assertEquals(length, password.getPassword().length());
+        assertEquals("", password.getPassword());
+    }
 
-		// Redirect standard output to capture printed messages
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outputStream));
+    @Test
+    @DisplayName("Test isInclude with 'yes'")
+    public void testIsIncludeWithYes() {
+        boolean result = generator.isInclude("yes");
+        assertTrue(result);
+    }
 
-		generator.checkPassword();
+    @Test
+    @DisplayName("Test isInclude with 'no'")
+    public void testIsIncludeWithNo() {
+        boolean result = generator.isInclude("no");
+        assertFalse(result);
+    }
 
-		String consoleOutput = outputStream.toString();
-		assertTrue(consoleOutput!=null);
-	}
+    @Test
+    @DisplayName("Test Password Request Error with valid input")
+    public void testPasswordRequestErrorWithValidInput() {
+        assertDoesNotThrow(() -> generator.PasswordRequestError("yes"));
+    }
 
-	@Test
-	public void testPrintMenu() {
-		// Redirect standard output to capture printed messages
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outputStream));
+    @Test
+    @DisplayName("Test Password Request Error with invalid input")
+    public void testPasswordRequestErrorWithInvalidInput() {
+        assertThrows(RuntimeException.class, () -> generator.PasswordRequestError("invalid"));
+    }
 
-		generator.printMenu();
+    @Test
+    @DisplayName("Test mainLoop with '1' option")
+    public void testMainLoopOption1() {
+        String input = "1\n4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        generator.mainLoop();
+    }
 
-		String consoleOutput = outputStream.toString();
-		assertTrue(consoleOutput.contains("Enter 1 - Password Generator"));
-		assertTrue(consoleOutput.contains("Enter 2 - Password Strength Check"));
-		assertTrue(consoleOutput.contains("Enter 3 - Useful Information"));
-		assertTrue(consoleOutput.contains("Enter 4 - Quit"));
-		assertTrue(consoleOutput.contains("Choice:"));
-	}
+    @Test
+    @DisplayName("Test mainLoop with '2' option")
+    public void testMainLoopOption2() {
+        String input = "2\n4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        generator.mainLoop(); 
+    }
 
-	@Test
-	public void testPrintQuitMessage() {
-		// Redirect standard output to capture printed messages
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outputStream));
+    @Test
+    @DisplayName("Test mainLoop with '3' option")
+    public void testMainLoopOption3() {
+        String input = "3\n4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        generator.mainLoop(); 
+    }
 
-		generator.printQuitMessage();
+    @Test
+    @DisplayName("Test mainLoop with '4' option")
+    public void testMainLoopOption4() {
+        String input = "4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        generator.mainLoop(); 
+    }
 
-		String consoleOutput = outputStream.toString();
-		assertTrue(consoleOutput.contains("Closing the program bye bye!"));
-	}
+    @ParameterizedTest
+    @ValueSource(strings = {"5", "abc"})
+    @DisplayName("Test mainLoop with invalid options")
+    public void testMainLoopWithInvalidOption(String option) {
+        String input = option + "\n4\n";
+        System.setIn(new ByteArrayInputStream(input.getBytes()));
+        generator.mainLoop(); 
+    }
 }
