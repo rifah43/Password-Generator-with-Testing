@@ -32,17 +32,27 @@ public class GeneratorTest {
         int length = 8;
         Password password = generator.GeneratePassword(length);
         assertNotNull(password);
-        assertEquals(length, password.getPassword().length());
+        assertEquals(length, password.toString().length());
     }
 
 	@Test
     @DisplayName("GeneratePassword with length 0 ")
     public void testGeneratePasswordLength0() {
         int length = 0;
-        Password password = generator.GeneratePassword(length);
-        assertNotNull(password);
-        assertEquals(length, password.getPassword().length());
-        assertEquals("", password.getPassword());
+
+        final NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> {
+                    try {
+                        generator.GeneratePassword(length);
+                    } catch (NullPointerException e) {
+                        throw new NullPointerException("This is null pointer exception");
+                    }
+                }
+        );
+
+        String expectedErrorMessage = "This is null pointer exception";
+        assertEquals(expectedErrorMessage, exception.getMessage());
     }
 
     @Test

@@ -1,10 +1,11 @@
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.*;
-
 public class PasswordTest {
     private Password password;
 
-    @Before
+    @BeforeAll
     public void setUpBefore() {
         System.out.println("Before all tests");
     }
@@ -19,35 +20,35 @@ public class PasswordTest {
         password = null;
     }
 
-    @After
+    @AfterAll
     public void tearDownAfter() {
         System.out.println("After all tests");
     }
 
     // Character type
     @Test
-    @Displayname("Uppercase")
+    @DisplayName("Uppercase")
     public void testCharTypeUpperCase() {
         int result = password.CharType('A');
         assertEquals(1, result);
     }
 
     @Test
-    @Displayname("Lowercase")
+    @DisplayName("Lowercase")
     public void testCharTypeLowerCase() {
         int result = password.CharType('b');
         assertEquals(2, result);
     }
 
     @Test
-    @Displayname("Digit")
+    @DisplayName("Digit")
     public void testCharTypeDigit() {
         int result = password.CharType('5');
         assertEquals(3, result);
     }
 
     @Test
-    @Displayname("Symbol")
+    @DisplayName("Symbol")
     public void testCharTypeSymbol() {
         int result = password.CharType('!');
         assertEquals(4, result);
@@ -55,7 +56,7 @@ public class PasswordTest {
 
     // Strength Calculation
     @Test
-    @Displayname("Weak Password")
+    @DisplayName("Weak Password")
     public void testPasswordStrengthWeak() {
         Password weakPassword = new Password("abcdef");
         int result = weakPassword.PasswordStrength();
@@ -63,7 +64,7 @@ public class PasswordTest {
     }
 
     @Test
-    @Displayname("Medium Password")
+    @DisplayName("Medium Password")
     public void testPasswordStrengthMedium() {
         Password mediumPassword = new Password("aB8s3");
         int result = mediumPassword.PasswordStrength();
@@ -71,7 +72,7 @@ public class PasswordTest {
     }
 
     @Test
-    @Displayname("Good Password")
+    @DisplayName("Good Password")
     public void testPasswordStrengthGood() {
         Password goodPassword = new Password("Abc123!");
         int result = goodPassword.PasswordStrength();
@@ -79,7 +80,7 @@ public class PasswordTest {
     }
 
     @Test
-    @Displayname("Very Good Password")
+    @DisplayName("Very Good Password")
     public void testPasswordStrengthVeryGood() {
         Password veryGoodPassword = new Password("Abc123!XYZ3iev*p%2*jhg@87nbl457");
         int result = veryGoodPassword.PasswordStrength();
@@ -88,14 +89,14 @@ public class PasswordTest {
 
     // Strength Display
     @Test
-    @Displayname("Very Good Password Response")
+    @DisplayName("Very Good Password Response")
     public void testCalculateScoreVeryGood() {
         String result = password.calculateScore();
         assertEquals("This is a very good password :D", result);
     }
 
     @Test
-    @Displayname("Good Password Response")
+    @DisplayName("Good Password Response")
     public void testCalculateScoreGood() {
         Password goodPassword = new Password("Abc123");
         String result = goodPassword.calculateScore();
@@ -103,7 +104,7 @@ public class PasswordTest {
     }
 
     @Test
-    @Displayname("Medium Password Response")
+    @DisplayName("Medium Password Response")
     public void testCalculateScoreMedium() {
         Password mediumPassword = new Password("abc123");
         String result = mediumPassword.calculateScore();
@@ -111,7 +112,7 @@ public class PasswordTest {
     }
 
     @Test
-    @Displayname("Weak Password Response")
+    @DisplayName("Weak Password Response")
     public void testCalculateScoreWeak() {
         Password weakPassword = new Password("abcdef");
         String result = weakPassword.calculateScore();
