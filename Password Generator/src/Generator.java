@@ -77,7 +77,7 @@ public class Generator {
         System.out.println("Do not use passwords which consist wholly of any simple combination of the aforementioned weak components");
     }
 
-    private void requestPassword() {
+    protected void requestPassword() {
         boolean IncludeUpper = false;
         boolean IncludeLower = false;
         boolean IncludeNum = false;

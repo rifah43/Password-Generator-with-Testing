@@ -5,10 +5,6 @@ import org.junit.jupiter.api.*;
 public class PasswordTest {
     private Password password;
 
-    @BeforeAll
-    public void setUpBefore() {
-        System.out.println("Before all tests");
-    }
 
     @BeforeEach
     public void setUp() {
@@ -20,10 +16,6 @@ public class PasswordTest {
         password = null;
     }
 
-    @AfterAll
-    public void tearDownAfter() {
-        System.out.println("After all tests");
-    }
 
     // Character type
     @Test

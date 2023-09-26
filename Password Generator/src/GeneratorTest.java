@@ -3,36 +3,49 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GeneratorTest {
     private Generator generator;
-    private Scanner scanner;
+    private InputStream originalSystemIn;
+    private PrintStream originalSystemOut;
+    private ByteArrayOutputStream outputStream;
 
     @BeforeEach
     public void setUp() {
-        String input = "yes\nyes\nyes\nyes\n8\n";
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-        scanner = new Scanner(System.in);
-
-        generator = new Generator(scanner);
+        generator = new Generator(new Scanner(System.in));
+        originalSystemIn = System.in;
+        originalSystemOut = System.out;
+        outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
     }
 
     @AfterEach
     public void tearDown() {
-        scanner.close();
-        System.setIn(System.in); 
+        System.setIn(originalSystemIn);
+        System.setOut(originalSystemOut);
+    }
+
+    private void provideInput(String input) {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        System.setIn(inputStream);
+    }
+
+    private String getOutput() {
+        return outputStream.toString();
     }
 
     @Test
     @DisplayName("Test Generated Password Length 8")
     public void testGeneratePassword() {
-        int length = 8;
-        Password password = generator.GeneratePassword(length);
+        Password password = generator.GeneratePassword(8);
         assertNotNull(password);
-        assertEquals(length, password.toString().length());
+        assertEquals(8, password.toString().length());
     }
 
 	@Test
@@ -82,17 +95,9 @@ public class GeneratorTest {
     }
 
     @Test
-    @DisplayName("Test mainLoop with '1' option")
-    public void testMainLoopOption1() {
-        String input = "1\n4\n";
-        System.setIn(new ByteArrayInputStream(input.getBytes()));
-        generator.mainLoop();
-    }
-
-    @Test
     @DisplayName("Test mainLoop with '2' option")
     public void testMainLoopOption2() {
-        String input = "2\n4\n";
+        String input = "\n2\n4\n";
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         generator.mainLoop(); 
     }
@@ -121,4 +126,46 @@ public class GeneratorTest {
         System.setIn(new ByteArrayInputStream(input.getBytes()));
         generator.mainLoop(); 
     }
+
+    @Test
+    @DisplayName("Test mainLoop with '1' option")
+    public void testMainLoopOption1() {
+        provideInput("1\n4\n");
+
+        generator.mainLoop();
+
+        String expectedOutput = "Welcome to Ziz Password Services :)\n"
+                + "1. Request Password\n"
+                + "2. Check Password\n"
+                + "3. Print Useful Info\n"
+                + "4. Quit\n"
+                + "\nDo you want Lowercase letters \"abcd...\" to be used? "
+                + "Do you want Uppercase letters \"ABCD...\" to be used? "
+                + "Do you want Numbers \"1234...\" to be used? "
+                + "Do you want Symbols \"!@#$...\" to be used? "
+                + "Great! Now enter the length of the password\n";
+
+        assertEquals(expectedOutput, getOutput());
+    }
+
+    @Test
+    @DisplayName("Test requestPassword method")
+    public void testRequestPassword() {
+        provideInput("yes\nno\nyes\nyes\n8\n");
+
+        generator.requestPassword();
+
+        System.setIn(originalSystemIn);
+
+        String expectedOutput = "Hello, welcome to the Password Generator :) answer"
+                + " the following questions by Yes or No \n"
+                + "Do you want Lowercase letters \"abcd...\" to be used? "
+                + "Do you want Uppercase letters \"ABCD...\" to be used? "
+                + "Do you want Numbers \"1234...\" to be used? "
+                + "Do you want Symbols \"!@#$...\" to be used? "
+                + "Great! Now enter the length of the password\n";
+
+        assertEquals(expectedOutput, getOutput());
+    }
+
 }
