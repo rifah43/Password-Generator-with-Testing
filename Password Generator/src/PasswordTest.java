@@ -35,7 +35,7 @@ public class PasswordTest {
     @Test
     @DisplayName("Digit")
     public void testCharTypeDigit() {
-        int result = password.CharType('5');
+        int result = password.CharType('6');
         assertEquals(3, result);
     }
 
