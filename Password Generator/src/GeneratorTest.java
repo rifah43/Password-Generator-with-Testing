@@ -141,16 +141,39 @@ public class GeneratorTest {
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
         generator.mainLoop();
+        String expectedOutput = "Hello, welcome to the Password Generator :)";
+        assertTrue(outputStream.toString().contains(expectedOutput));
     }
 
     @Test
-    @DisplayName("Test requestPassword method")
+    @DisplayName("Test requestPassword normal")
     public void testRequestPassword() {
-        String input = "yes\nno\nyes\nyes\n8\n";
+        String input = "yes\nyes\nyes\nyes\n8\n";
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
         generator.requestPassword();
+        String expectedOutput = "Do you want Lowercase letters \"abcd...\" to be used?";
+        assertTrue(outputStream.toString().contains(expectedOutput));
     }
+
+    @Test
+    @DisplayName("Test requestPassword with wrong input")
+    public void testRequestPassword() {
+        String input = "hi\nyes\nhi\nyes\nhi\nyes\nhi\nyes\n8\n";
+        provideInput(input);
+        Generator generator = new Generator(new Scanner(System.in));
+        generator.requestPassword();
+        String expectedOutput = "Do you want Lowercase letters \"abcd...\" to be used?";
+        assertTrue(outputStream.toString().contains(expectedOutput));
+    }
+
+    @Test
+    @DisplayName("Test requestPassword with wrong input and all no")
+    public void testRequestPassword() {
+        String input = "hi\nno\nhi\nno\nhi\nno\nhi\nno\nyes\nno\nno\nno\n8\n";
+        provideInput(input);
+        Generator generator = new Generator(new Scanner(System.in));
+        generator.requestPassword();
 
     private void provideInput(String input) {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
