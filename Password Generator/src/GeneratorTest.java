@@ -71,7 +71,6 @@ public class GeneratorTest {
     }
 
 
-
     @Test
     @DisplayName("Test mainLoop with '2' option")
     public void testMainLoopOption2() {
@@ -137,6 +136,8 @@ public class GeneratorTest {
     @Test
     @DisplayName("Test mainLoop with '1' option")
     public void testMainLoopOption1() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         String input = "1\nyes\nno\nyes\nyes\n8\n4\n";
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
@@ -147,7 +148,9 @@ public class GeneratorTest {
 
     @Test
     @DisplayName("Test requestPassword normal")
-    public void testRequestPassword() {
+    public void testRequestPasswordNormal() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         String input = "yes\nyes\nyes\nyes\n8\n";
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
@@ -158,7 +161,9 @@ public class GeneratorTest {
 
     @Test
     @DisplayName("Test requestPassword with wrong input")
-    public void testRequestPassword() {
+    public void testRequestPasswordWrong() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         String input = "hi\nyes\nhi\nyes\nhi\nyes\nhi\nyes\n8\n";
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
@@ -169,11 +174,17 @@ public class GeneratorTest {
 
     @Test
     @DisplayName("Test requestPassword with wrong input and all no")
-    public void testRequestPassword() {
+    public void testRequestPasswordNo() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
         String input = "hi\nno\nhi\nno\nhi\nno\nhi\nno\nyes\nno\nno\nno\n8\n";
         provideInput(input);
         Generator generator = new Generator(new Scanner(System.in));
         generator.requestPassword();
+
+        String expectedOutput = "You have selected no characters to generate your";
+        assertTrue(outputStream.toString().contains(expectedOutput));
+    }
 
     private void provideInput(String input) {
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());

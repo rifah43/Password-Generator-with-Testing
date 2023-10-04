@@ -4,11 +4,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.*;
 public class PasswordTest {
     private Password password;
+    private Password passwordWithRepeatingChars;
+    private Password passwordWithoutRepeatingChars;
+    private Password passwordZeroLength;
 
 
     @BeforeEach
     public void setUp() {
+
         password = new Password("Abc123!");
+        passwordWithRepeatingChars = new Password("AABcd123!");
+        passwordWithoutRepeatingChars = new Password("AbCde123!");
+        passwordZeroLength = new Password("");
     }
 
     @AfterEach
@@ -109,5 +116,26 @@ public class PasswordTest {
         Password weakPassword = new Password("abcdef");
         String result = weakPassword.calculateScore();
         assertEquals("This is a weak password :(", result);
+    }
+
+    @Test
+    @DisplayName("Check repeating with repeat")
+    public void testCheckRepeatingCharactersWithRepeats() {
+        String result = passwordWithRepeatingChars.checkRepeatingCharacters();
+        assertEquals("This password contains repeating characters!", result);
+    }
+
+    @Test
+    @DisplayName("Check repeating with no repeat")
+    public void testCheckRepeatingCharactersWithoutRepeats() {
+        String result = passwordWithoutRepeatingChars.checkRepeatingCharacters();
+        assertEquals("This password does not contain repeating characters.", result);
+    }
+
+    @Test
+    @DisplayName("Check repeating with zero length")
+    public void testCheckRepeatingCharactersZeroLength() {
+        String result = passwordZeroLength.checkRepeatingCharacters();
+        assertEquals("The password is null", result);
     }
 }

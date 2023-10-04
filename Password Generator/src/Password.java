@@ -77,6 +77,26 @@ public class Password {
         }
     }
 
+
+    public String checkRepeatingCharacters() {
+        String s = this.Value;
+        if(s.length()<1){
+            return "The password is null";
+        }
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            // Check if the character repeats
+            for (int j = i + 1; j < s.length(); j++) {
+                if (c == s.charAt(j)) {
+                    return "This password contains repeating characters!";
+                }
+            }
+        }
+
+        return "This password does not contain repeating characters.";
+    }
+
     @Override
     public String toString() {
         return Value;
